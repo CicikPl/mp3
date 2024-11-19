@@ -75,27 +75,20 @@
             background-color: #8a3e99;
         }
 
+        .slider-container {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .slider-container label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
         input[type="range"] {
             width: 100%;
             max-width: 300px;
             margin: 10px 0;
-        }
-
-        .time {
-            color: #bbb;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-
-        .input-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            align-items: center;
-        }
-
-        .slider-container {
-            margin-top: 20px;
         }
 
         .progress-container {
@@ -111,6 +104,23 @@
             background-color: #5e3b8d;
             width: 0%;
             border-radius: 5px;
+        }
+
+        .time {
+            color: #bbb;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            align-items: center;
+        }
+
+        .input-container input[type="range"] {
+            margin-top: 10px;
         }
 
     </style>
@@ -136,18 +146,25 @@
             <button id="muteButton">Mute</button>
         </div>
 
+        <!-- Volume and speed controls -->
         <div class="slider-container">
             <label for="volumeSlider">Volume:</label>
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
 
             <label for="speedSlider">Speed:</label>
             <input type="range" id="speedSlider" min="0.5" max="2" step="0.1" value="1">
+            <div id="speedValue">Speed: 1.00x</div> <!-- Speed display -->
+
+            <label for="bassSlider">Bass:</label>
+            <input type="range" id="bassSlider" min="0" max="100" step="1" value="50">
         </div>
 
+        <!-- Progress bar -->
         <div class="progress-container">
             <div class="progress-bar" id="progressBar"></div>
         </div>
 
+        <!-- Current Time Display -->
         <div class="time">
             <p>Current Time: <span id="currentTime">0:00</span> / <span id="totalTime">0:00</span></p>
         </div>
@@ -163,10 +180,12 @@
         const muteButton = document.getElementById("muteButton");
         const volumeSlider = document.getElementById("volumeSlider");
         const speedSlider = document.getElementById("speedSlider");
+        const bassSlider = document.getElementById("bassSlider");
         const currentTimeDisplay = document.getElementById("currentTime");
         const totalTimeDisplay = document.getElementById("totalTime");
         const fileInput = document.getElementById("fileInput");
         const progressBar = document.getElementById("progressBar");
+        const speedValue = document.getElementById("speedValue");
 
         let audioFiles = [];
         let currentTrack = 0;
@@ -259,29 +278,23 @@
             }
         });
 
-        // Volume control
+        // Volume slider functionality
         volumeSlider.addEventListener("input", () => {
             audioPlayer.volume = volumeSlider.value;
         });
 
-        // Playback speed control
+        // Speed slider functionality
         speedSlider.addEventListener("input", () => {
-            audioPlayer.playbackRate = speedSlider.value;
+            const speed = speedSlider.value;
+            audioPlayer.playbackRate = speed;
+            speedValue.textContent = `Speed: ${speed}x`;
         });
 
-        // Listen for track end to play next track (if repeat is off)
-        audioPlayer.addEventListener("ended", () => {
-            if (isRepeat) {
-                audioPlayer.currentTime = 0;
-                audioPlayer.play();
-            } else {
-                if (isShuffle) {
-                    currentTrack = Math.floor(Math.random() * audioFiles.length);
-                } else {
-                    currentTrack = (currentTrack + 1) % audioFiles.length;
-                }
-                loadTrack(currentTrack);
-            }
+        // Bass slider functionality
+        bassSlider.addEventListener("input", () => {
+            const bassValue = bassSlider.value;
+            // Implementing bass effect using Web Audio API could go here
+            console.log("Bass:", bassValue); // Placeholder for bass functionality
         });
     </script>
 </body>
